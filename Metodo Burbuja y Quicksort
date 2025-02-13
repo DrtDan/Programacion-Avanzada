@@ -1,0 +1,61 @@
+import time  # Librería para medir el tiempo de ejecución
+import random  # Librería para generar números aleatorios
+
+# Implementación del algoritmo de ordenamiento Burbuja (Bubble Sort)
+def dubble_sort(arr):
+    n = len(arr)
+    for i in range(n):  
+        for j in range(0, n - i - 1):  # Últimos elementos ya están ordenados, así que reducimos el rango
+            if arr[j] > arr[j + 1]:  # Si el elemento actual es mayor que el siguiente, los intercambiamos
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+
+# Implementación del algoritmo de ordenamiento QuickSort
+def quicksort(arr):
+    if len(arr) <= 1:  # Caso base: si la lista tiene 0 o 1 elementos, ya está ordenada
+        return arr
+    pivot = arr[len(arr) // 2]  # Se elige un pivote en la posición central
+    left = [x for x in arr if x < pivot]  # Elementos menores que el pivote
+    middle = [x for x in arr if x == pivot]  # Elementos iguales al pivote
+    right = [x for x in arr if x > pivot]  # Elementos mayores que el pivote
+    return quicksort(left) + middle + quicksort(right)  # Se combinan las partes ordenadas
+
+# Función que mide el tiempo de ejecución de un algoritmo de ordenamiento
+def measure_time(sort_algorithm, data):
+    start_time = time.time()  # Captura el tiempo antes de ejecutar el algoritmo
+    sort_algorithm(data)  # Ejecuta el algoritmo de ordenamiento
+    end_time = time.time()  # Captura el tiempo después de ejecutar el algoritmo
+    return end_time - start_time  # Retorna el tiempo transcurrido en segundos
+
+# Pruebas de rendimiento con diferentes tamaños de listas
+tamaños = [100, 500, 1000, 5000, 10000]  # Tamaños de listas a probar
+resultados = {}  # Diccionario donde se almacenarán los tiempos de ejecución
+
+for tamaño in tamaños:
+    random_lista = [random.randint(1, 10000) for _ in range(tamaño)]  # Se genera una lista de números aleatorios
+
+    # Medición de tiempo con Bubble Sort
+    bubble_data = random_lista.copy()  # Se crea una copia de la lista original para no modificarla
+    bubble_time = measure_time(dubble_sort, bubble_data)  # Se mide el tiempo del algoritmo Bubble Sort
+    lista_ordenadaS = dubble_sort(bubble_data)  # (Este valor no se usa, ya que bubble_sort no retorna nada)
+
+    # Medición de tiempo con QuickSort
+    quick_data = random_lista.copy()  # Se crea otra copia de la lista original
+    quick_time = measure_time(lambda arr: quicksort(arr), quick_data)  # Se mide el tiempo de ejecución de QuickSort
+    lista_ordenada = quicksort(quick_data)  # Se obtiene la lista ordenada con QuickSort
+
+    # Se almacenan los resultados en el diccionario
+    resultados[tamaño] = {"Bubble Sort": bubble_time, "Quick Sort": quick_time}
+
+# Mostrar los resultados de los tiempos de ejecución
+for tamaño, times in resultados.items():
+    print(f"Tamaño de la lista: {tamaño}")
+    if tamaño == 10000:  # Si el tamaño es 10,000, mostramos más detalles
+        print(f"Lista original (primeros 10 elementos): {random_lista[:10]}")
+        print(f"Lista ordenada BS (10 primeros): {bubble_data[:10]}")
+        print(f"Tiempo Bubble Sort: {times['Bubble Sort']:.6f} segundos")
+        print(f"Lista ordenada QS (10 primeros): {lista_ordenada[:10]}")
+        print(f"Tiempo Quick Sort: {times['Quick Sort']:.6f} segundos")
+    else:  # Para otros tamaños, solo mostramos los tiempos de ejecución
+        print(f"Tiempo Bubble Sort: {times['Bubble Sort']:.6f} segundos")
+        print(f"Tiempo Quick Sort: {times['Quick Sort']:.6f} segundos")
+    print()  # Línea en blanco para mejor visualización
